@@ -131,6 +131,7 @@ router.get('/dashboard', auth, async (req, res) => {
                 finalPrice: product.price,
                 initialPrice: product.initialPrice,
                 image: product.image,
+                verified: product.verified,
                 id: product._id
             }))
         });
