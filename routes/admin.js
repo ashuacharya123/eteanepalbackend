@@ -34,26 +34,34 @@ router.get('/seller-report/:sellerId', auth, adminAuth, async (req, res) => {
 
         // Prepare the report
         const report = {
-            seller: {
-                name: seller.name,
-                email: seller.email
-            },
-            totalSales,
-            numberOfOrders,
-            products: products.map(product => ({
-                name: product.name,
-                stock: product.stock,
-                price: product.price,
-                initialPrice: product.initialPrice,
-                image: product.image,
-                id: product._id
-            })),
-            orders: orders.map(order => ({
-                orderId: order._id,
-                total: order.total,
-                delivery: order.delivery,
-                orderedAt: order.orderedAt
-            }))
+          seller: {
+            name: seller.name,
+            email: seller.email,
+            panCard: seller.panCard,
+            panCardDocument: seller.panCardDocument,
+            businessName: seller.businessName,
+            businessAddress: seller.businessAddress,
+            mobileNumber: seller.mobileNumber,
+            verified: seller.verified,
+          },
+          totalSales,
+          numberOfOrders,
+          products: products.map((product) => ({
+            name: product.name,
+            stock: product.stock,
+            price: product.price,
+            initialPrice: product.initialPrice,
+            image: product.image,
+            verified: product.verified,
+            id: product._id,
+          })),
+          orders: orders.map((order) => ({
+            orderId: order._id,
+            total: order.total,
+            delivery: order.delivery,
+            status: order.status,
+            orderedAt: order.orderedAt,
+          })),
         };
 
         res.status(200).json(report);
