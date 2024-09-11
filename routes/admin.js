@@ -140,7 +140,7 @@ router.put('/verify/product/:id', [auth, adminAuth], async (req, res) => {
 router.get('/all-users', auth, async (req, res) => {
     try {
         // Fetch all users except those with the role 'admin'
-        const users = await User.find({ role: { $ne: 'admin' } }).select('name email role');
+        const users = await User.find({ role: { $ne: 'admin' } }).select('name email role avatar');
         res.json(users);
     } catch (err) {
         console.error(err.message);
