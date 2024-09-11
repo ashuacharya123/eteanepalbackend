@@ -122,18 +122,18 @@ router.get('/dashboard', auth, async (req, res) => {
         const products = await Product.find({ seller: sellerId });
 
         res.status(200).json({
-            totalProducts,
-            totalSales,
-            products: products.map(product => ({
-                name: product.name,
-                description: product.description,
-                stock: product.stock,
-                finalPrice: product.price,
-                initialPrice: product.initialPrice,
-                image: product.image,
-                verified: product.verified,
-                id: product._id
-            }))
+          totalProducts,
+          totalSales,
+          products: products.map((product) => ({
+            name: product.name,
+            description: product.description,
+            stock: product.stock,
+            finalPrice: product.price,
+            initialPrice: product.initialPrice,
+            image: product.image,
+            verified: product.verified,
+            id: product._id,
+          })),
         });
     } catch (error) {
         console.error(error.message);
