@@ -34,51 +34,60 @@ const uploadFields = upload.fields([{ name: 'panCardDocument', maxCount: 1 },
 // Update the rating of a product
 router.put('/product/rating', auth, async (req, res) => {
     try {
-        const { productId, newRating } = req.body;
+      const { productId, newRating } = req.body;
 
-        // Validate the new rating
-        if (newRating < 1 || newRating > 5) {
-            return res.status(400).json({ message: 'Rating must be between 1 and 5' });
-        }
+      // Validate the new rating
+      if (newRating < 1 || newRating > 5) {
+        return res
+          .status(400)
+          .json({ message: "Rating must be between 1 and 5" });
+      }
 
-        // Check if user is a buyer
-        const user = await User.findById(req.user.id).select('-password');
-        if (user.role !== 'buyer') {
-            return res.status(403).json({ message: 'Unauthorized: Only buyers can rate products' });
-        }
+      // Check if user is a buyer
+      const user = await User.findById(req.user.id).select("-password");
+      if (user.role !== "buyer") {
+        return res
+          .status(403)
+          .json({ message: "Unauthorized: Only buyers can rate products" });
+      }
 
-        // Check if the user has already rated this product
-        if (user.ratedProducts.includes(productId)) {
-            return res.status(400).json({ message: 'You have already rated this product' });
-        }
+      // Check if the user has already rated this product
+      if (user.ratedProducts.includes(productId)) {
+        return res
+          .status(400)
+          .json({ message: "You have already rated this product" });
+      }
 
-        // Find the product
-        const product = await Product.findById(productId);
-        if (!product) {
-            return res.status(404).json({ message: 'Product not found' });
-        }
+      // Find the product
+      const product = await Product.findById(productId);
+      if (!product) {
+        return res.status(404).json({ message: "Product not found" });
+      }
 
-        // Calculate the new rating
-        const totalRatings = product.rating * product.ratingCount;
-        const updatedRatingCount = product.ratingCount + 1;
-        const updatedRating = (totalRatings + newRating) / updatedRatingCount;
+      // Initialize rating and ratingCount if they are undefined
+      product.rating = product.rating || 0;
+      product.ratingCount = product.ratingCount || 0;
 
-        // Update the product with the new rating and rating count
-        product.rating = updatedRating;
-        product.ratingCount = updatedRatingCount;
-        
-        // Save the updated product
-        await product.save();
-        
-        // Update the user to record that they have rated this product and the rating value
-        user.ratedProducts.push({ productId, rating: newRating });
-        await user.save();
-        
+      // Calculate the new rating
+      const totalRatings = product.rating * product.ratingCount;
+      const updatedRatingCount = product.ratingCount + 1;
+      const updatedRating = (totalRatings + newRating) / updatedRatingCount;
 
-        res.status(200).json({
-            message: 'Product rating updated successfully',
-            ratedProducts: user.ratedProducts,
-        });
+      // Update the product with the new rating and rating count
+      product.rating = updatedRating;
+      product.ratingCount = updatedRatingCount;
+
+      // Save the updated product
+      await product.save();
+
+      // Update the user to record that they have rated this product and the rating value
+      user.ratedProducts.push({ productId, rating: newRating });
+      await user.save();
+
+      res.status(200).json({
+        message: "Product rating updated successfully",
+        ratedProducts: user.ratedProducts,
+      });
     } catch (error) {
         res.status(500).json({ message: 'Internal server error', error });
     }
