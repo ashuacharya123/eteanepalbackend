@@ -9,10 +9,12 @@ require('dotenv').config();
 
 // Middleware
 app.use(cors({
-    origin: 'http://localhost:3000', //frontend URL
+    origin: ['http://localhost:3000', 'https://e-tea-nepal.vercel.app'], // Array of allowed origins
     credentials: true
 }));
+
 app.use(express.json());
+
 
 // MongoDB connection
 var db= "mongodb+srv://ashish:jpayotei@cluster0.qqvtkdk.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
